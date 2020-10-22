@@ -3,11 +3,15 @@ import Phaser from "phaser";
 //import gameScene from "./gameScene";
 
 var game;
-var platforms;
 var player;
-var platformSmall;
-var platformMedium;
-var platformLarge;
+var startingPlatform;
+var fallingPlatform;
+var fallingPlatform1;
+var fallingPlatform2;
+var fallingPlatform3;
+var fallingPlatform4;
+var fallingPlatform5;
+var fallingPlatform6;
 
 window.onload = function() {
   let gameConfig = {
@@ -25,7 +29,7 @@ window.onload = function() {
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y : 300 },
+        gravity: { y : 1600 },
         debug: false
       }
     },
@@ -56,7 +60,6 @@ class bootGame extends Phaser.Scene {
 class playGame extends Phaser.Scene {
   constructor() {
       super('playGame');
-      console.log("playGame");
   }
   preload() {
     this.load.image('diamond', 'src/assets/diamond.png');
@@ -68,17 +71,48 @@ class playGame extends Phaser.Scene {
     });
   }
   create() {
+    fallingPlatform = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),0,'diamond').setScale(1);
+    this.physics.add.existing(fallingPlatform, true);
+    fallingPlatform.body.allowGravity = false;
+    fallingPlatform.body.immovable = true;
 
-    platforms = this.physics.add.staticGroup();
+    fallingPlatform1 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),-200,'diamond').setScale(2);
+    this.physics.add.existing(fallingPlatform1, true);
+    fallingPlatform1.body.allowGravity = false;
+    fallingPlatform1.body.immovable = true;
 
-    platforms.create(400, 568, 'platform').setScale(2).refreshBody();
-    platforms.create(600, 400, 'platform');
-    platforms.create(50, 250, 'platform');
-    platforms.create(750, 220, 'platform');
+    fallingPlatform2 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),0,'diamond').setScale(3);
+    this.physics.add.existing(fallingPlatform2, true);
+    fallingPlatform2.body.allowGravity = false;
+    fallingPlatform2.body.immovable = true;
+
+    fallingPlatform3 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),-100,'diamond').setScale(2);
+    this.physics.add.existing(fallingPlatform3, true);
+    fallingPlatform3.body.allowGravity = false;
+    fallingPlatform3.body.immovable = true;
+
+    fallingPlatform4 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),0,'diamond').setScale(1.5);
+    this.physics.add.existing(fallingPlatform4, true);
+    fallingPlatform4.body.allowGravity = false;
+    fallingPlatform4.body.immovable = true;
+
+    fallingPlatform5 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),-300,'diamond').setScale(1.5);
+    this.physics.add.existing(fallingPlatform5, true);
+    fallingPlatform5.body.allowGravity = false;
+    fallingPlatform5.body.immovable = true;
+
+    fallingPlatform6 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),-400,'diamond').setScale(4.5);
+    this.physics.add.existing(fallingPlatform6, true);
+    fallingPlatform6.body.allowGravity = false;
+    fallingPlatform6.body.immovable = true;
+
+    startingPlatform = this.physics.add.staticGroup();
+
+    startingPlatform.create(400, 710, 'platform').setScale(2).refreshBody();
 
     player = this.physics.add.sprite(100, 450, 'dude');
-
-    //player.setBounce(0.2);
+    
+    player.setBounce(0);
     player.setCollideWorldBounds(true);
 
     this.anims.create({
@@ -101,39 +135,36 @@ class playGame extends Phaser.Scene {
         repeat: -1
     });
 
-    this.physics.add.collider(player, platforms, platformSmall, platformMedium, platformLarge);
-
-    this.add.image(0,game.config.height-50,'scarabs').setOrigin(0,0);
-    platformSmall = this.physics.add.staticImage(Phaser.Math.Between(-50, game.config.width), 0, 'platform').setOrigin(0,0).setDepth(0);
-    platformMedium = this.physics.add.image(Phaser.Math.Between(-50, game.config.width), 0, 'platform').setOrigin(0,0).setDepth(0);
-    platformLarge = this.physics.add.staticImage(Phaser.Math.Between(-50, game.config.width), 0, 'platform').setOrigin(0,0).setDepth(0);
-    platformSmall.setScale(.35);
-    platformMedium.setScale(.5);
-    platformLarge.setScale(.75);
-    platformSmall.body.allowGravity = false;
-    platformSmall.body.immovable = true;
-    platformMedium.body.allowGravity = false;
-    platformMedium.body.immovable = true;
-    platformLarge.body.allowGravity = false;
-    platformLarge.body.immovable = true;
+    this.physics.add.collider(player, startingPlatform);
+    this.physics.add.collider(player, fallingPlatform);
+    this.physics.add.collider(player, fallingPlatform1);
+    this.physics.add.collider(player, fallingPlatform2);
+    this.physics.add.collider(player, fallingPlatform3);
+    this.physics.add.collider(player, fallingPlatform4);
+    this.physics.add.collider(player, fallingPlatform5);
+    this.physics.add.collider(player, fallingPlatform6);
   }
 
   update() {
-    this.movePlatform(platformSmall, 4);
-    this.movePlatform(platformMedium, 2);
-    this.movePlatform(platformLarge, 1);
+    this.movePlatform(fallingPlatform, .75);
+    this.movePlatform(fallingPlatform1, 1.5);
+    this.movePlatform(fallingPlatform2, .5);
+    this.movePlatform(fallingPlatform3, 1);
+    this.movePlatform(fallingPlatform4, 2);
+    this.movePlatform(fallingPlatform5, 1.25);
+    this.movePlatform(fallingPlatform6, .65);
 
     var cursors = this.input.keyboard.createCursorKeys();
 
     if (cursors.left.isDown)
     {
-        player.setVelocityX(-160);
+        player.setVelocityX(-260);
 
         player.anims.play('left', true);
     }
     else if (cursors.right.isDown)
     {
-        player.setVelocityX(160);
+        player.setVelocityX(260);
 
         player.anims.play('right', true);
     }
@@ -146,7 +177,7 @@ class playGame extends Phaser.Scene {
 
     if (cursors.up.isDown && player.body.touching.down)
     {
-        player.setVelocityY(-330);
+        player.setVelocityY(-630);
     }
   }
 
@@ -158,7 +189,7 @@ class playGame extends Phaser.Scene {
   }
 
   resetPlatform(platform) {
-    platform.y = 0;
+    platform.y = -100;
     let randomX = Phaser.Math.Between(0, game.config.width);
     platform.x = randomX;
   }
