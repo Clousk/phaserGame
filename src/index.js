@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser, { AUTO } from "phaser";
 //import titleScene from "./titleScene";
 //import gameScene from "./gameScene";
 
@@ -16,7 +16,7 @@ var fallingPlatform6;
 window.onload = function() {
   let gameConfig = {
     type: Phaser.AUTO,
-    backgroundColor: 0xa57334,
+    backgroundColor: 0x463521,
     pixelArt: true,
 
     scale:{
@@ -44,15 +44,16 @@ class bootGame extends Phaser.Scene {
     super('bootGame');
   }
   preload() {
-    this.load.image('sky', 'src/assets/sky.png');
-    //this.load.image("ground", "./assets/platform.png");
-    //this.load.image("diamond", "./assets/diamond.png");
-    //this.load.image("woof", "./assets/woof.png");
+    this.load.image('title', 'src/assets/title.png');
   }
   create() {
-    this.add.text(20, 20, "Loading game...").setDepth(1);
-    this.add.image(0,0,"sky").setOrigin(0,0).setDepth(0);
-    this.scene.start('playGame');
+    //this.add.text(20, 20, "Loading game...").setDepth(1);
+    var titleScreen = this.add.image(0,0, "title").setOrigin(0,0).setDepth(0);
+    titleScreen.setDisplaySize(game.config.width,game.config.height);
+    setTimeout(function() {
+      game.scene.start('playGame');
+    },3000)
+    
   }
   update() {}
 }
@@ -62,8 +63,9 @@ class playGame extends Phaser.Scene {
       super('playGame');
   }
   preload() {
-    this.load.image('diamond', 'src/assets/diamond.png');
-    this.load.image('platform', 'src/assets/platform.png');
+    this.load.image('background', 'src/assets/background.png');
+    this.load.image('diamond', 'src/assets/fallingrock.png');
+    this.load.image('platform', 'src/assets/floor.png');
     this.load.image('scarabs', 'src/assets/diamond.png');
     this.load.spritesheet('dude', 'src/assets/dude.png',{
       frameWidth: 32,
@@ -71,6 +73,8 @@ class playGame extends Phaser.Scene {
     });
   }
   create() {
+    this.add.tileSprite(0,0, game.config.width, game.config.height, "background").setOrigin(0,0).setDepth(0);
+
     fallingPlatform = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),0,'diamond').setScale(1);
     this.physics.add.existing(fallingPlatform, true);
     fallingPlatform.body.allowGravity = false;
@@ -81,7 +85,7 @@ class playGame extends Phaser.Scene {
     fallingPlatform1.body.allowGravity = false;
     fallingPlatform1.body.immovable = true;
 
-    fallingPlatform2 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),0,'diamond').setScale(3);
+    fallingPlatform2 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),0,'diamond').setScale(2.5);
     this.physics.add.existing(fallingPlatform2, true);
     fallingPlatform2.body.allowGravity = false;
     fallingPlatform2.body.immovable = true;
@@ -101,10 +105,28 @@ class playGame extends Phaser.Scene {
     fallingPlatform5.body.allowGravity = false;
     fallingPlatform5.body.immovable = true;
 
-    fallingPlatform6 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),-400,'diamond').setScale(4.5);
+    fallingPlatform6 = this.physics.add.image(Phaser.Math.Between(-50, game.config.width),-400,'diamond').setScale(3);
     this.physics.add.existing(fallingPlatform6, true);
     fallingPlatform6.body.allowGravity = false;
     fallingPlatform6.body.immovable = true;
+
+    var boundingBoxSize = 20;
+    fallingPlatform.body.setSize(fallingPlatform.width, boundingBoxSize);
+    fallingPlatform1.body.setSize(fallingPlatform1.width, boundingBoxSize);
+    fallingPlatform2.body.setSize(fallingPlatform2.width, boundingBoxSize);
+    fallingPlatform3.body.setSize(fallingPlatform3.width, boundingBoxSize);
+    fallingPlatform4.body.setSize(fallingPlatform4.width, boundingBoxSize);
+    fallingPlatform5.body.setSize(fallingPlatform5.width, boundingBoxSize);
+    fallingPlatform6.body.setSize(fallingPlatform6.width, boundingBoxSize);
+
+    // for tiles
+    fallingPlatform.body.collideDown = false;
+    fallingPlatform1.body.collideDown = false;
+    fallingPlatform2.body.collideDown = false;
+    fallingPlatform3.body.collideDown = false;
+    fallingPlatform4.body.collideDown = false;
+    fallingPlatform5.body.collideDown = false;
+    fallingPlatform6.body.collideDown = false;
 
     startingPlatform = this.physics.add.staticGroup();
 
@@ -153,6 +175,15 @@ class playGame extends Phaser.Scene {
     this.movePlatform(fallingPlatform4, 2);
     this.movePlatform(fallingPlatform5, 1.25);
     this.movePlatform(fallingPlatform6, .65);
+
+    fallingPlatform.body.offset.y = 0;
+    fallingPlatform1.body.offset.y = 0;
+    fallingPlatform2.body.offset.y = 0;
+    fallingPlatform3.body.offset.y = 0;
+    fallingPlatform4.body.offset.y = 0;
+    fallingPlatform5.body.offset.y = 0;
+    fallingPlatform6.body.offset.y = 0;
+    
 
     var cursors = this.input.keyboard.createCursorKeys();
 
